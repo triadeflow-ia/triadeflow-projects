@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Triadeflow — Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #030712; --bg-1: #0a0f1a; --bg-2: #111827; --bg-3: #1a2332;
+      --navy: #003153; --gold: #C0B289; --gold-dark: #9a8d6b; --gold-light: #d4c9a5;
+      --teal: #00D4D4; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+      --text-1: #f8fafc; --text-2: #cbd5e1; --text-3: #94a3b8; --text-4: #64748b; --text-5: #475569;
+      --border: rgba(255,255,255,0.08); --border-h: rgba(255,255,255,0.16);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; color-scheme: dark; }
+    body {
+      font-family: 'Inter', -apple-system, system-ui, sans-serif;
+      background: var(--bg-0); color: var(--text-1);
+      -webkit-font-smoothing: antialiased; line-height: 1.6;
+      font-feature-settings: 'cv02','cv03','cv04','cv11';
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    body::after {
+      content: ''; position: fixed; top: -300px; right: -300px; width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(192,178,137,0.06) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 48px 32px; position: relative; z-index: 1; }
+
+    /* Header */
+    header { padding-bottom: 48px; margin-bottom: 40px; border-bottom: 1px solid var(--border); }
+    .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+    .brand-mark {
+      width: 48px; height: 48px; border-radius: 13px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--navy));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 24px; color: white;
+      box-shadow: 0 0 32px -6px rgba(192,178,137,0.4);
+    }
+    .brand h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand p { font-size: 11px; color: var(--text-4); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace; }
+
+    .stats-row {
+      display: flex; gap: 32px; flex-wrap: wrap;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-4);
+    }
+    .stats-row .num { font-size: 28px; font-weight: 700; color: var(--text-1); display: block; line-height: 1; margin-bottom: 4px; }
+    .stats-row .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; }
+
+    /* Filters */
+    .filters {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+    }
+    .filter-btn {
+      padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-3); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .filter-btn:hover { border-color: var(--border-h); color: var(--text-1); background: rgba(255,255,255,0.04); }
+    .filter-btn.active { background: rgba(192,178,137,0.1); border-color: rgba(192,178,137,0.3); color: var(--gold); }
+
+    /* Category */
+    .category { margin-bottom: 48px; }
+    .category-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .category-header h2 { font-size: 18px; font-weight: 700; }
+    .category-header .count { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-5); }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+    .card {
+      background: linear-gradient(180deg, var(--bg-1) 0%, #070b13 100%);
+      border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .card:hover { border-color: var(--border-h); transform: translateY(-1px); }
+
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .card-name { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+    .card-call {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold);
+      background: rgba(192,178,137,0.08); border: 1px solid rgba(192,178,137,0.2);
+      padding: 2px 8px; border-radius: 5px; white-space: nowrap;
+    }
+
+    .card-desc { font-size: 12px; color: var(--text-4); line-height: 1.5; margin-bottom: 14px; min-height: 36px; }
+
+    /* Status badge */
+    .status {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em; border: 1px solid;
+    }
+    .status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .status-live { background: rgba(0,212,212,0.08); color: var(--teal); border-color: rgba(0,212,212,0.25); }
+    .status-live::before { box-shadow: 0 0 8px var(--teal); animation: pulse 2s infinite; }
+    .status-progress { background: rgba(59,130,246,0.08); color: var(--info); border-color: rgba(59,130,246,0.25); }
+    .status-pending { background: rgba(245,158,11,0.08); color: var(--warning); border-color: rgba(245,158,11,0.25); }
+    .status-done { background: rgba(16,185,129,0.08); color: var(--success); border-color: rgba(16,185,129,0.25); }
+    .status-paused { background: rgba(239,68,68,0.08); color: var(--danger); border-color: rgba(239,68,68,0.25); }
+
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(0,212,212,0.5); }
+      50% { box-shadow: 0 0 0 4px rgba(0,212,212,0); }
+    }
+
+    /* Progress bar */
+    .progress-wrap { margin: 12px 0 14px; }
+    .progress-bar {
+      height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 2px; transition: width 0.5s ease;
+    }
+    .progress-label {
+      display: flex; justify-content: space-between; margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-5);
+    }
+
+    /* Links */
+    .card-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .link {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 600;
+      text-decoration: none; transition: all 0.2s; border: 1px solid var(--border);
+      color: var(--text-3);
+    }
+    .link:hover { border-color: var(--border-h); color: var(--text-1); background: rgba(255,255,255,0.04); }
+    .link-live { border-color: rgba(0,212,212,0.25); color: var(--teal); }
+    .link-git { border-color: rgba(255,255,255,0.12); }
+
+    /* Footer */
+    footer {
+      margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border);
+      text-align: center; font-size: 11px; color: var(--text-5);
+    }
+    footer strong { color: var(--gold); }
+
+    .gradient-gold {
+      background: linear-gradient(135deg, #e8d9a8, #C0B289, #9a8d6b);
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    @media (max-width: 720px) {
+      .container { padding: 32px 16px; }
+      .cards { grid-template-columns: 1fr; }
+      .stats-row { gap: 20px; }
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-0); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="brand-mark">T</div>
+      <div>
+        <h1>Triadeflow <span class="gradient-gold">Projects</span></h1>
+        <p>Painel de acompanhamento · atualizado 2026-04-05</p>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div><span class="num">35</span><span class="label">Projetos</span></div>
+      <div><span class="num" style="color:var(--teal)">11</span><span class="label">LIVE</span></div>
+      <div><span class="num" style="color:var(--info)">12</span><span class="label">Em andamento</span></div>
+      <div><span class="num" style="color:var(--success)">7</span><span class="label">Finalizados</span></div>
+      <div><span class="num" style="color:var(--warning)">3</span><span class="label">Pendentes</span></div>
+      <div><span class="num" style="color:var(--danger)">2</span><span class="label">Pausados</span></div>
+    </div>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterAll()">Todos</button>
+    <button class="filter-btn" onclick="filter('live')">LIVE</button>
+    <button class="filter-btn" onclick="filter('progress')">Em andamento</button>
+    <button class="filter-btn" onclick="filter('done')">Finalizados</button>
+    <button class="filter-btn" onclick="filter('pending')">Pendentes</button>
+    <button class="filter-btn" onclick="filter('paused')">Pausados</button>
+  </div>
+
+  <!-- PRODUTOS SAAS -->
+  <div class="category" data-cat="saas">
+    <div class="category-header">
+      <h2>Produtos SaaS</h2>
+      <span class="count">11 PROJETOS</span>
+    </div>
+    <div class="cards">
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Pulse CRM Monitor</span>
+          <span class="card-call">"pulse"</span>
+        </div>
+        <div class="card-desc">Monitoramento inteligente de CRM + RevOps. HeroMetric, AI Coach, Playbook Wizard IA, alertas multi-canal, Electric Teal live states.</div>
+        <span class="status status-live">LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:65%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Dashboard v2 LIVE</span><span>65%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://pulse-app-production-eaa0.up.railway.app/" target="_blank" class="link link-live">● LIVE</a>
+          <a href="https://github.com/triadeflow-ia/pulse-crm" target="_blank" class="link link-git">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Brandbook Triadeflow + Pulse</span>
+          <span class="card-call">"brandbook"</span>
+        </div>
+        <div class="card-desc">Brand strategy + visual identity + voice library + 7 application templates. 8.049 linhas. 4 sprints pendentes (A→D) pra chegar em 9/10.</div>
+        <span class="status status-progress">Sprints A-D pendentes</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:40%;background:var(--gold)"></div></div>
+          <div class="progress-label"><span>Fundacao v1.0 entregue</span><span>40%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://github.com/triadeflow-ia/pulse-crm" target="_blank" class="link link-git">GitHub (dentro do pulse)</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">RevFlow (ex-Pulse RevOps)</span>
+          <span class="card-call">"revflow"</span>
+        </div>
+        <div class="card-desc">Plataforma RevOps multi-tenant. Monorepo React+Express, Supabase, Stripe billing LIVE, 69 testes, 35 commits. PENDENTE rename de "Pulse".</div>
+        <span class="status status-live">LIVE (rename pendente)</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--success)"></div></div>
+          <div class="progress-label"><span>Finalizado, pendente rename</span><span>95%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://pulse.triadeflow.ai" target="_blank" class="link link-live">● pulse.triadeflow.ai</a>
+          <a href="https://github.com/triadeflow-ia/pulse" target="_blank" class="link link-git">GitHub</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">HUB CRM</span>
+          <span class="card-call">"hub"</span>
+        </div>
+        <div class="card-desc">CRM whitelabel GHL. 30 pagantes, R$497/mes. 12 afiliados. Centro da escada de valor Triadeflow.</div>
+        <span class="status status-live">LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:80%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Operacional, brand v2 pendente</span><span>80%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://hub.triadeflow.ai" target="_blank" class="link link-live">● hub.triadeflow.ai</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Content Machine</span>
+          <span class="card-call">"content machine"</span>
+        </div>
+        <div class="card-desc">Dashboard Railway LIVE. 8 carrosseis/dia, 4 layouts, auto-scheduler, Remotion, multi-plataforma Instagram.</div>
+        <span class="status status-live">LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Operacional</span><span>85%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://content-machine-production-8e81.up.railway.app" target="_blank" class="link link-live">● Railway</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">FlowReport</span>
+          <span class="card-call">"flowreport"</span>
+        </div>
+        <div class="card-desc">Gerador de relatorios automaticos v3.0. LIVE em producao.</div>
+        <span class="status status-live">LIVE v3.0</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Operacional</span><span>90%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://flowreport.triadeflow.ai" target="_blank" class="link link-live">● flowreport.triadeflow.ai</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">CRIA SaaS</span>
+          <span class="card-call">"cria"</span>
+        </div>
+        <div class="card-desc">Plataforma SaaS multi-tenant pra criacao de agentes IA WhatsApp. Case zero: Amo Sobrancelhas (Mariah v7.1 LIVE).</div>
+        <span class="status status-progress">Em construcao</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:35%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>MVP + case zero</span><span>35%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="#" class="link link-git">GitHub (privado)</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">CredFlow</span>
+          <span class="card-call">"credflow"</span>
+        </div>
+        <div class="card-desc">SaaS recuperacao de credito. Em fase de construcao.</div>
+        <span class="status status-progress">Em construcao</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Arquitetura</span><span>15%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">FinControl</span>
+          <span class="card-call">"fincontrol"</span>
+        </div>
+        <div class="card-desc">MVP financeiro. 11 paginas, Railway LIVE.</div>
+        <span class="status status-live">LIVE MVP</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:60%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>MVP operacional</span><span>60%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">RecoverFlow</span>
+          <span class="card-call">"recoverflow"</span>
+        </div>
+        <div class="card-desc">Recuperacao vendas GHL + Greenn webhooks.</div>
+        <span class="status status-progress">Em construcao</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Webhooks</span><span>20%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Triadeflow HQ</span>
+          <span class="card-call">"hq"</span>
+        </div>
+        <div class="card-desc">Escritorio virtual SkyOffice fork. 48 bots. LIVE Railway.</div>
+        <span class="status status-live">LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:70%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Operacional</span><span>70%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CLIENTES TDI -->
+  <div class="category" data-cat="tdi">
+    <div class="category-header">
+      <h2>Clientes TDI</h2>
+      <span class="count">6 CLIENTES ATIVOS</span>
+    </div>
+    <div class="cards">
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Moss Beauty</span>
+          <span class="card-call">"moss"</span>
+        </div>
+        <div class="card-desc">Snapshot TDI Core v1.1 aplicado via Playwright. Score 88%. Tags lixo limpas.</div>
+        <span class="status status-progress">F3 em andamento</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:88%;background:var(--success)"></div></div>
+          <div class="progress-label"><span>Score 88%</span><span>88%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Petisco Alimentos</span>
+          <span class="card-call">"petisco"</span>
+        </div>
+        <div class="card-desc">Industria/distribuicao. Verify 86%. Template agent GHL v2.</div>
+        <span class="status status-progress">Verify 86%</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:86%;background:var(--success)"></div></div>
+          <div class="progress-label"><span>Verify</span><span>86%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Byanca / Sala Secreta</span>
+          <span class="card-call">"byanca"</span>
+        </div>
+        <div class="card-desc">GHL LIVE, F3 85%. Painel LIVE byanca.triadeflow.ai.</div>
+        <span class="status status-progress">F3 85%</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Painel LIVE</span><span>85%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://byanca.triadeflow.ai" target="_blank" class="link link-live">● Painel</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">ePelicula</span>
+          <span class="card-call">"epelicula"</span>
+        </div>
+        <div class="card-desc">Inside sales tecnico. TDI + Notion + Miro prontos.</div>
+        <span class="status status-progress">TDI pronto</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:60%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Docs prontos</span><span>60%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Reinaldo Lopes</span>
+          <span class="card-call">"reinaldo"</span>
+        </div>
+        <div class="card-desc">F1+F2 completos, F3 em andamento. Blueprint validado call 04/04. CRM diagnostico + implementacao 10-15d.</div>
+        <span class="status status-progress">F3 em andamento</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:55%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>CRM implementacao</span><span>55%</span></div>
+        </div>
+        <div class="card-links">
+          <a href="https://reinaldo.triadeflow.ai" target="_blank" class="link link-live">● Painel</a>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Malila Semijoias</span>
+          <span class="card-call">"malila"</span>
+        </div>
+        <div class="card-desc">E-commerce Shopify. Fases 1-2 completas.</div>
+        <span class="status status-progress">Fases 1-2 OK</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:50%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>F3 pendente</span><span>50%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CLIENTES BOTS -->
+  <div class="category" data-cat="bots">
+    <div class="category-header">
+      <h2>Clientes Bot / Automacao</h2>
+      <span class="count">8 PROJETOS</span>
+    </div>
+    <div class="cards">
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Dahora (Sushi da Hora)</span>
+          <span class="card-call">"dahora"</span>
+        </div>
+        <div class="card-desc">Bot IA delivery 5 unidades Fortaleza. Railway LIVE. Monitor Telegram/Notion em construcao.</div>
+        <span class="status status-live">Bot LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:70%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Monitor pendente</span><span>70%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top">
+          <span class="card-name">Amo Sobrancelhas</span>
+          <span class="card-call">"amo"</span>
+        </div>
+        <div class="card-desc">Case zero CRIA. Mariah v7.1 LIVE. Migracao Triadeflow→Mood concluida.</div>
+        <span class="status status-live">v7.1 LIVE</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:90%;background:var(--teal)"></div></div>
+          <div class="progress-label"><span>Operacional</span><span>90%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">DQV - Delivery Que Vende</span>
+          <span class="card-call">"dqv"</span>
+        </div>
+        <div class="card-desc">Cliente zero Pulse. Mentoria delivery, ticket R$3K. Playbook SPIN+Sandler enviado. 18K+ opps no CRM.</div>
+        <span class="status status-progress">Validacao</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:75%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Playbook enviado</span><span>75%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="pending">
+        <div class="card-top">
+          <span class="card-name">Lexa IA</span>
+          <span class="card-call">"lexa"</span>
+        </div>
+        <div class="card-desc">Agente voz WhatsApp PTT. Aguardando access token.</div>
+        <span class="status status-pending">Bloqueado</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:10%;background:var(--warning)"></div></div>
+          <div class="progress-label"><span>Aguardando token</span><span>10%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Reverso Academy</span>
+          <span class="card-call">"reverso"</span>
+        </div>
+        <div class="card-desc">CRM Kommo audit. 8 funis, 70% implementado.</div>
+        <span class="status status-progress">70% implementado</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:70%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Gaps mapeados</span><span>70%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">USA Salus</span>
+          <span class="card-call">"salus"</span>
+        </div>
+        <div class="card-desc">A2P 10DLC compliance. Asana criado.</div>
+        <span class="status status-progress">Compliance</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Asana setup</span><span>30%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">MDT Midias</span>
+          <span class="card-call">"mdt"</span>
+        </div>
+        <div class="card-desc">Integracao GHL MDT Midias.</div>
+        <span class="status status-progress">Integracao</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:25%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>GHL setup</span><span>25%</span></div>
+        </div>
+      </div>
+
+      <div class="card" data-status="progress">
+        <div class="card-top">
+          <span class="card-name">Maison Bucheri</span>
+          <span class="card-call">"bucheri"</span>
+        </div>
+        <div class="card-desc">Projeto Canva MCP.</div>
+        <span class="status status-progress">Em andamento</span>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--info)"></div></div>
+          <div class="progress-label"><span>Canva MCP</span><span>20%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FINALIZADOS -->
+  <div class="category" data-cat="done">
+    <div class="category-header">
+      <h2>Finalizados</h2>
+      <span class="count">7 PROJETOS</span>
+    </div>
+    <div class="cards">
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">Salus WhatsApp Closer</span><span class="card-call">"salus bots"</span></div>
+        <div class="card-desc">Bots Sofia + Sara. COMPLETOS.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">Camarmo Import</span><span class="card-call">"camarmo"</span></div>
+        <div class="card-desc">V1 + Import 553 contatos outplacement.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">M2 Motos Credere</span><span class="card-call">"m2"</span></div>
+        <div class="card-desc">RPA Playwright multi-banco financiamento.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">Clara SDR</span><span class="card-call">"clara"</span></div>
+        <div class="card-desc">Core completo 59 nodes.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">MJ Clinic CRC</span><span class="card-call">"mj"</span></div>
+        <div class="card-desc">Bot Lia auto-pilot.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">K3 Locacoes</span><span class="card-call">"k3"</span></div>
+        <div class="card-desc">4 FUP workflows publicados.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="done">
+        <div class="card-top"><span class="card-name">Quiz Financiamento</span><span class="card-call">"quiz"</span></div>
+        <div class="card-desc">v3.0 LIVE.</div>
+        <span class="status status-done">Finalizado</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ESTRATEGIA -->
+  <div class="category" data-cat="strategy">
+    <div class="category-header">
+      <h2>Estrategia & Pendentes</h2>
+      <span class="count">5 ITENS</span>
+    </div>
+    <div class="cards">
+
+      <div class="card" data-status="pending">
+        <div class="card-top"><span class="card-name">Lead Magnet</span><span class="card-call">"lead magnet"</span></div>
+        <div class="card-desc">skills.triadeflow.ai — pagina estilo Xquads/Dev de Oferta mostrando arsenal Triadeflow. Captura WhatsApp + email.</div>
+        <span class="status status-pending">Pendente desde 03/04</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--warning)"></div></div><div class="progress-label"><span>Nao iniciado</span><span>0%</span></div></div>
+      </div>
+
+      <div class="card" data-status="paused">
+        <div class="card-top"><span class="card-name">Google Ads</span><span class="card-call">"ads"</span></div>
+        <div class="card-desc">Campanha PAUSADA. R$711/15d, 0 leads, 11 bugs (tracking morto, webhook 100% falha, kw ruim R$432).</div>
+        <span class="status status-paused">Pausada</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:15%;background:var(--danger)"></div></div><div class="progress-label"><span>Precisa auditoria</span><span>15%</span></div></div>
+      </div>
+
+      <div class="card" data-status="pending">
+        <div class="card-top"><span class="card-name">Otavio Co-Producao</span><span class="card-call">"otavio"</span></div>
+        <div class="card-desc">Mentoria personal trainers. Split 60/40.</div>
+        <span class="status status-pending">Pendente</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:10%;background:var(--warning)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="paused">
+        <div class="card-top"><span class="card-name">Mundo Ray / Grupo Ray</span><span class="card-call">"mundo ray"</span></div>
+        <div class="card-desc">Proposta SaaS. Arquitetura Hetzner + Docker.</div>
+        <span class="status status-paused">Proposta enviada</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:20%;background:var(--danger)"></div></div></div>
+      </div>
+
+      <div class="card" data-status="live">
+        <div class="card-top"><span class="card-name">Talentus Digital</span><span class="card-call">"talentus"</span></div>
+        <div class="card-desc">Dashboard v3.3 + Sync v3.2 + Popup v4 (21 nodes, self-healing). Funis separados por marca.</div>
+        <span class="status status-live">LIVE</span>
+        <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:85%;background:var(--teal)"></div></div><div class="progress-label"><span>Operacional</span><span>85%</span></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>Triadeflow Projects Dashboard</strong> · v1.0 · 2026-04-05</p>
+    <p style="margin-top: 6px;">Pra chamar qualquer projeto no Claude Code, diga o nome entre aspas (ex: "pulse", "brandbook", "tdi reinaldo")</p>
+  </footer>
+</div>
+
+<script>
+function filter(status) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => {
+    c.style.display = c.dataset.status === status ? '' : 'none';
+  });
+}
+function filterAll() {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c => c.style.display = '');
+}
+</script>
+</body>
+</html>
